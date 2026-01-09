@@ -1,7 +1,7 @@
-import React, { useContext, useMemo, useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-import { BoxContext } from "../../context/BoxContext";
 import { SHIPPING_RATES, ROUTES, ITEMS_PER_PAGE } from "../../constants";
 import {
   formatCurrency,
@@ -12,7 +12,7 @@ import {
 import styles from "./BoxList.module.css";
 
 function BoxList() {
-  const { boxes } = useContext(BoxContext);
+  const boxes = useSelector((state) => state.boxes.boxes);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const totalPages = useMemo(() => {

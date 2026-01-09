@@ -1,10 +1,11 @@
-import React, { useState, useContext } from "react";
-import { BoxContext } from "../../context/BoxContext";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addBox } from "../../store/boxSlice";
 import { SHIPPING_RATES } from "../../constants";
 import styles from "./AddBox.module.css";
 
 function AddBox() {
-  const { addBox } = useContext(BoxContext);
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     receiverName: "",
@@ -84,7 +85,7 @@ function AddBox() {
       destinationCountry: formData.destinationCountry,
     };
 
-    addBox(boxData);
+    dispatch(addBox(boxData));
 
     setFormData({
       receiverName: "",
