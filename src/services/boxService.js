@@ -1,11 +1,13 @@
-import { STORAGE_KEY, SHIPPING_RATES } from '../constants';
+import { STORAGE_KEY, SHIPPING_RATES } from 'constants';
+import { mockBoxes } from 'data/mockBoxes';
 
 export const getBoxes = () => {
     const boxes = localStorage.getItem(STORAGE_KEY);
     if (boxes) {
         return JSON.parse(boxes);
     }
-    return [];
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(mockBoxes));
+    return mockBoxes;
 };
 
 export const saveBox = (boxData) => {
@@ -26,7 +28,7 @@ export const saveBox = (boxData) => {
     return newBox;
 };
 
-export const calculateShippingCost = (weight, country) => {
+export function calculateShippingCost (weight, country) {
     const countryData = SHIPPING_RATES[country];
     if (countryData && weight > 0) {
         return weight * countryData.rate;

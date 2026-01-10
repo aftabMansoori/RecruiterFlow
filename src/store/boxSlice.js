@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getBoxes, saveBox } from '../services/boxService';
+import { getBoxes, saveBox } from 'services/boxService';
 
 const initialState = {
   boxes: [],

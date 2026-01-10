@@ -1,17 +1,93 @@
 import React, { useMemo, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { styled } from '@mui/material/styles';
+import {
+  Box,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  Stack,
+} from "@mui/material";
 
-import { SHIPPING_RATES, ROUTES, ITEMS_PER_PAGE } from "../../constants";
+import { SHIPPING_RATES, ROUTES, ITEMS_PER_PAGE } from "constants";
 import {
   formatCurrency,
   getPaginatedBoxes,
   getTotalPages,
-} from "../../services/boxService";
+} from "services/boxService";
 
-import styles from "./BoxList.module.css";
+const Container = styled(Box)(({ theme }) => ({
+  maxWidth: 1000,
+  margin: '2rem auto',
+  padding: '0 1rem',
+}));
 
-function BoxList() {
+const Title = styled(Typography)(({ theme }) => ({
+  marginBottom: '2rem',
+}));
+
+const EmptyPaper = styled(Paper)(({ theme }) => ({
+  padding: '3rem',
+  textAlign: 'center',
+}));
+
+const EmptyText = styled(Typography)(({ theme }) => ({
+  marginBottom: '1rem',
+}));
+
+const ColorBox = styled(Box)(({ theme, color }) => ({
+  width: 30,
+  height: 30,
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: `rgb(${color})`,
+  border: '1px solid rgba(255, 255, 255, 0.1)',
+}));
+
+const ColorWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(1),
+}));
+
+const ColorText = styled(Typography)(({ theme }) => ({
+  [theme.breakpoints.down('md')]: {
+    display: 'none',
+  },
+}));
+
+const PaginationWrapper = styled(Box)(({ theme }) => ({
+  marginTop: '1.5rem',
+}));
+
+const Summary = styled(Typography)(({ theme }) => ({
+  textAlign: 'right',
+  marginBottom: '1rem',
+}));
+
+const PaginationButtons = styled(Stack)(({ theme }) => ({
+  justifyContent: 'center',
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
+
+const ReceiverNameCell = styled(TableCell)(({ theme }) => ({
+  width: '200px',
+  minWidth: '200px',
+  maxWidth: '200px',
+}));
+
+export default function BoxList() {
   const boxes = useSelector((state) => state.boxes.boxes);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -70,84 +146,87 @@ function BoxList() {
   };
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Shipping Boxes</h1>
+    <Container>
+      <Title variant="h1">
+        Shipping Boxes
+      </Title>
 
       {boxes.length === 0 ? (
-        <div className={styles.emptyState}>
-          <p>No boxes have been added yet.</p>
-          <Link to={ROUTES.ADD_BOX} className={styles.addLink}>
+        <EmptyPaper>
+          <EmptyText variant="body1" color="text.secondary">
+            No boxes have been added yet.
+          </EmptyText>
+          <Button
+            component={Link}
+            to={ROUTES.ADD_BOX}
+            variant="contained"
+            size="large"
+          >
             Add your first box
-          </Link>
-        </div>
+          </Button>
+        </EmptyPaper>
       ) : (
         <>
-          <div className={styles.tableWrapper}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Receiver Name</th>
-                  <th>Weight (kg)</th>
-                  <th>Box Colour</th>
-                  <th>Destination</th>
-                  <th>Shipping Cost</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <ReceiverNameCell>Receiver Name</ReceiverNameCell>
+                  <TableCell>Weight (kg)</TableCell>
+                  <TableCell>Box Colour</TableCell>
+                  <TableCell>Destination</TableCell>
+                  <TableCell align="right">Shipping Cost</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
                 {paginatedBoxes.map((box) => (
-                  <tr key={box.id}>
-                    <td>{box.receiverName}</td>
-                    <td>{box.weight}</td>
-                    <td>
-                      <div className={styles.colorCell}>
-                        <div
-                          className={styles.colorBox}
-                          style={{ backgroundColor: `rgb(${box.boxColour})` }}
-                        ></div>
-                        <span className={styles.colorText}>
+                  <StyledTableRow key={box.id}>
+                    <ReceiverNameCell>{box.receiverName}</ReceiverNameCell>
+                    <TableCell>{box.weight}</TableCell>
+                    <TableCell>
+                      <ColorWrapper>
+                        <ColorBox color={box.boxColour} />
+                        <ColorText variant="caption" color="text.secondary">
                           ({box.boxColour})
-                        </span>
-                      </div>
-                    </td>
-                    <td>{getCountryName(box.destinationCountry)}</td>
-                    <td>{formatCurrency(box.shippingCost)}</td>
-                  </tr>
+                        </ColorText>
+                      </ColorWrapper>
+                    </TableCell>
+                    <TableCell>{getCountryName(box.destinationCountry)}</TableCell>
+                    <TableCell align="right">{formatCurrency(box.shippingCost)}</TableCell>
+                  </StyledTableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TableBody>
+            </Table>
+          </TableContainer>
 
-          <div className={styles.paginationWrapper}>
-            <div className={styles.summary}>
+          <PaginationWrapper>
+            <Summary variant="body2" color="text.secondary">
               Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} to{" "}
               {Math.min(currentPage * ITEMS_PER_PAGE, boxes.length)} of{" "}
               {boxes.length} boxes
-            </div>
+            </Summary>
 
             {totalPages > 1 && (
-              <div className={styles.pagination}>
-                <button
+              <PaginationButtons direction="row" spacing={1}>
+                <Button
+                  variant="outlined"
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className={styles.pageBtn}
                 >
                   Previous
-                </button>
-
-                <button
+                </Button>
+                <Button
+                  variant="outlined"
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className={styles.pageBtn}
                 >
                   Next
-                </button>
-              </div>
+                </Button>
+              </PaginationButtons>
             )}
-          </div>
+          </PaginationWrapper>
         </>
       )}
-    </div>
+    </Container>
   );
 }
-
-export default BoxList;
