@@ -1,6 +1,6 @@
-# Shipping Box
+# Shipping Box App
 
-A simple app to calculate shipping costs for boxes being sent from India to different countries.
+Simple app to calculate shipping costs for boxes. Add boxes, pick colors, select countries, done.
 
 ## What it does
 
@@ -12,31 +12,30 @@ First, install the dependencies:
 
 ```bash
 npm install
-```
-
-Then start the development server:
-
-```bash
 npm run start
 ```
 
-The app will open at `http://localhost:3000`.
+Opens at `http://localhost:3000`
 
-## Features
+## What it does
 
-- Add new boxes with receiver details, weight, color picker, and destination country
-- View all boxes in a table with pagination (10 items per page)
-- Shipping cost is calculated as weight × country rate
-- Data is saved in your browser's local storage
-- Responsive design that works on mobile and desktop
+- Add boxes with receiver name, weight, color, and destination
+- View all boxes in a table (10 per page)
+- Calculates shipping cost = weight × country rate
+- Saves everything in localStorage
 
-## Available countries
+## Countries & Rates
 
-- Sweden: ₹7.35 per kg
-- China: ₹11.53 per kg
-- Brazil: ₹15.63 per kg
-- Australia: ₹50.09 per kg
+- Sweden: ₹7.35/kg
+- China: ₹11.53/kg  
+- Brazil: ₹15.63/kg
+- Australia: ₹50.09/kg
 
-## Tech stack
+## Tech Stuff
 
-Built with React, React Router for navigation, and CSS Modules for styling. State management is handled with React Context API.
+- React
+- Redux Toolkit (state management)
+- Material UI (components)
+- React Hook Form (forms)
+- React Router (navigation)
+- localStorage (data persistence)
